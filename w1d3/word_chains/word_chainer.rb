@@ -1,3 +1,5 @@
+require 'set'
+
 class Node
 	attr_reader :val, :parent
 	def initialize(val, parent = nil)
@@ -38,6 +40,11 @@ class WordChainer
 	end
 
 	def run(start, target)
+		unless start.length == target.length
+			puts 'Can\'t get there :('
+			return
+		end
+		seen = Set.new
 		q = [Node.new(start)]
 		found = false
 		until q.empty? || found
@@ -49,12 +56,13 @@ class WordChainer
 					return trace(new_node)
 					break
 				end
-				q << new_node
+				q << new_node unless seen.include?(new_word)
+				seen << new_word
 			end
 			q.shift
 		end
 
-		'Can\'t get there :('
+		puts 'Can\'t get there :('
 	end
 
 	def trace(node)
@@ -68,4 +76,4 @@ class WordChainer
 end
 
 w = WordChainer.new
-w.run('ruby', 'bark')
+w.run('say', 'car')
