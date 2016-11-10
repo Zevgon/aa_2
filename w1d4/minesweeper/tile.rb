@@ -1,12 +1,18 @@
 class Tile
 	attr_accessor :revealed, :val
-	def initialize(val)
+	attr_reader :flagged
+	def initialize(val = 'r')
 		@val = val
 		@revealed = false
+		@flagged = false
 	end
 
 	def bomb?
 		@val == '*'
+	end
+
+	def flag!
+		@flagged = true
 	end
 
 	def reveal!
@@ -14,7 +20,13 @@ class Tile
 	end
 
 	def to_s
-		@val ? "#{@val}" : ' '
+		if @revealed
+			"|#{@val}"
+		elsif @flagged
+			"|f"
+		else
+			'|_'
+		end
 	end
 
 end
