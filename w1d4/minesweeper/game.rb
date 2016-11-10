@@ -1,7 +1,7 @@
 require_relative 'board'
 
 class Minesweeper
-	def initialize(size = 9, num_bombs = 15)
+	def initialize(size = 9, num_bombs = 10)
 		@board = Board.new(size, num_bombs)
 	end
 
@@ -69,5 +69,5 @@ class Minesweeper
 
 end
 
-m = Minesweeper.new(9, 10)
+m = Minesweeper.new(9, 5)
 m.play
