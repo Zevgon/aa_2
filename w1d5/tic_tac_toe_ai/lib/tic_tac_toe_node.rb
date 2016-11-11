@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative 'tic_tac_toe'
 
 class TicTacToeNode
@@ -5,44 +6,44 @@ class TicTacToeNode
   def initialize(board, next_mover_mark, prev_move_pos = nil)
     @board = board
     @next_mover_mark = next_mover_mark
+    @current_mark = other_mark(@next_mover_mark)
     @prev_move_pos = prev_move_pos
   end
 
   def losing_node?(evaluator)
-    return true if @board.winner == other_mark(evaluator)
-    # return true if children.all?{|child| child.losing_node?(other_mark(@next_mover_mark))}
+    return true if @board.over? && @board.winner && @board.winner != evaluator
+    return false if @board.over? && @board.winner == evaluator
+    return false if @board.tied?
+    return true if children.any?{|child| child.losing_node?(evaluator)}
+    return false if children.all?{|child| child.losing_node?(other_mark(evaluator))}
     false
   end
 
   def winning_node?(evaluator)
-    @board.winner == evaluator
+    return true if @board.over? && evaluator == @board.winner
+    return false if @board.over? && @board.winner && @board.winner != evaluator
+    return false if @board.tied?
+    return true if @current_mark == evaluator && children.any?{|child| child.winning_node?(@current_mark)}
+    return true if @next_mover_mark == evaluator && children.all?{|child| child.winning_node?(@current_mark)}
+    false
   end
 
   def other_mark(mark)
     mark == :x ? :o : :x
   end
 
-  def next_next_mover_mark
-    @next_mover_mark == :x ? :o : :x
-  end
-
-  def get_move_pos(num)
-    [num / 3, num % 3]
-  end
-
   # This method generates an array of all moves that can be made after
   # the current move.
   def children
     result = []
-    9.times do |idx|
-      move_pos = get_move_pos(idx)
-      i, j = move_pos
-      next if @board[move_pos]
-      next_possible_board = Array.new(9)
-      next_possible_board[idx] = @next_mover_mark
-      next_possible_board = next_possible_board.each_slice(3).to_a
-      new_node = TicTacToeNode.new(Board.new(next_possible_board), next_next_mover_mark, move_pos)
-      result << new_node
+    (0..2).each do |row_idx|
+      (0..2).each do |col_idx|
+        duped = @board.dup
+        unless duped[[row_idx, col_idx]]
+          duped[[row_idx, col_idx]] = @next_mover_mark
+          result << TicTacToeNode.new(duped, @current_mark, [row_idx, col_idx])
+        end
+      end
     end
 
     result
