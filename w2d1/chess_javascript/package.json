@@ -1,0 +1,13 @@
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "babel --presets es2015 src -d lib"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.0.0"
+  },
+  "dependencies": {
+    "webpack": "^1.13.3"
+  }
+}
