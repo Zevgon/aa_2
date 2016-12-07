@@ -5,7 +5,7 @@ class NullPiece(Piece):
 		Piece.__init__(self, board, color, pos)
 
 	def to_s(self):
-		return '_'
+		return '   '
 
 	def valid_moves(self):
 		raise Exception('No piece at ' + str(self.pos))
